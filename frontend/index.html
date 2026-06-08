@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex em Grafos</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Neo4j + Express + JWT</p>
+          <h1>Pokedex em Grafos</h1>
+          <p class="lead">Explore relacoes entre Pokemon, tipos, evolucoes, fraquezas, habilidades, favoritos e equipes.</p>
+        </div>
+        <div class="status-stack">
+          <span class="status-pill" id="apiStatus">Conectando...</span>
+          <span class="status-pill" id="authStatus">Visitante</span>
+        </div>
+      </header>
+
+      <section class="controls" aria-label="Filtros">
+        <label>
+          Buscar
+          <input id="searchInput" type="search" placeholder="Nome ou numero" autocomplete="off" />
+        </label>
+        <label>
+          Tipo
+          <select id="typeFilter">
+            <option value="">Todos</option>
+          </select>
+        </label>
+        <button class="icon-button" id="refreshButton" type="button" title="Atualizar">↻</button>
+      </section>
+
+      <section class="content-grid">
+        <aside class="detail-panel" id="detailPanel"></aside>
+
+        <section class="dex-section">
+          <div class="section-heading">
+            <h2>Catalogo</h2>
+            <span id="counter">0 Pokemon</span>
+          </div>
+          <div class="pokemon-grid" id="pokemonGrid"></div>
+        </section>
+      </section>
+
+      <section class="graph-panel">
+        <div class="section-heading">
+          <h2>Mapa do grafo</h2>
+          <span id="graphCounter">0 relacoes</span>
+        </div>
+        <div class="graph-list" id="graphList"></div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="section-heading">
+          <h2>Area do treinador</h2>
+          <span>Favoritos e equipes</span>
+        </div>
+
+        <div class="admin-grid">
+          <form id="authForm" class="form-card">
+            <h3>Acesso</h3>
+            <label>
+              Nome
+              <input name="nome" placeholder="Treinador" />
+            </label>
+            <label>
+              E-mail
+              <input name="email" type="email" value="admin@pokedex.local" required />
+            </label>
+            <label>
+              Senha
+              <input name="senha" type="password" value="pokedex123" minlength="6" required />
+            </label>
+            <div class="button-row">
+              <button type="button" id="registerButton">Cadastrar</button>
+              <button type="submit">Entrar</button>
+            </div>
+          </form>
+
+          <form id="pokemonForm" class="form-card wide">
+            <h3>Novo Pokemon</h3>
+            <div class="form-columns">
+              <label>
+                Nome
+                <input name="nome" placeholder="Eevee" required />
+              </label>
+              <label>
+                Numero
+                <input name="numero" type="number" min="1" placeholder="133" required />
+              </label>
+              <label>
+                Tipo
+                <select name="tipoId" required></select>
+              </label>
+              <label>
+                Fraquezas
+                <select name="fraquezaIds" multiple></select>
+              </label>
+              <label>
+                Evolui para
+                <select name="evoluiParaId"></select>
+              </label>
+              <label>
+                Sprite URL
+                <input name="sprite_url" type="url" placeholder="https://..." />
+              </label>
+            </div>
+            <label>
+              Habilidades
+              <input name="habilidades" placeholder="Adaptability: fortalece golpes do mesmo tipo" />
+            </label>
+            <label>
+              Descricao
+              <textarea name="descricao" rows="3" placeholder="Descricao curta do Pokemon."></textarea>
+            </label>
+            <button type="submit">Adicionar Pokemon</button>
+          </form>
+
+          <form id="teamForm" class="form-card">
+            <h3>Nova equipe</h3>
+            <label>
+              Nome da equipe
+              <input name="nome" placeholder="Time Kanto" required />
+            </label>
+            <label>
+              Membros
+              <select name="pokemonIds" multiple></select>
+            </label>
+            <button type="submit">Salvar equipe</button>
+          </form>
+        </div>
+
+        <div class="trainer-data">
+          <div>
+            <h3>Favoritos</h3>
+            <div class="compact-list" id="favoritesList"></div>
+          </div>
+          <div>
+            <h3>Equipes</h3>
+            <div class="compact-list" id="teamsList"></div>
+          </div>
+        </div>
+
+        <p class="message" id="messageArea" role="status"></p>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

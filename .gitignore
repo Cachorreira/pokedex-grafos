@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.env
+*.log
+
+# Docker/local runtime
+neo4j_data/
+neo4j_logs/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Generated local reports
+*.pdf
+relatorio-*.html
+ToUser.html
+pokedex_database.sql

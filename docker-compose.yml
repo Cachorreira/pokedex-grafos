@@ -1,0 +1,39 @@
+services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: pokedex-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/pokedex123
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - pokedex_net
+
+  app:
+    build: .
+    container_name: pokedex-app
+    depends_on:
+      - neo4j
+    restart: on-failure
+    environment:
+      PORT: 3000
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: pokedex123
+      JWT_SECRET: pokedex_backend_dev_secret_2026
+    ports:
+      - "3000:3000"
+    networks:
+      - pokedex_net
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+
+networks:
+  pokedex_net:
+    driver: bridge
