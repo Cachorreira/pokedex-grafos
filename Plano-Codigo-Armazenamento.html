@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Plano do Código e Armazenamento</title>
+    <style>
+      @page { size: A4; margin: 16mm; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: #1f2933;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 1.48;
+      }
+      .cover {
+        min-height: 240px;
+        padding: 30px;
+        border-radius: 12px;
+        color: #fff;
+        background: linear-gradient(135deg, #17202a 0%, #2f7ecb 55%, #d13f38 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        margin-bottom: 22px;
+      }
+      .eyebrow {
+        margin: 0 0 10px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      h1 { margin: 0 0 10px; font-size: 34px; line-height: 1; }
+      .subtitle { max-width: 660px; margin: 0; font-size: 14px; }
+      h2 {
+        margin: 20px 0 8px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #dbe5ee;
+        color: #213547;
+        font-size: 18px;
+      }
+      h3 { margin: 14px 0 6px; color: #2f3f4f; font-size: 14px; }
+      p { margin: 0 0 8px; }
+      ul, ol { margin: 6px 0 10px 20px; padding: 0; }
+      li { margin: 4px 0; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0 14px;
+      }
+      th, td {
+        padding: 8px 9px;
+        border: 1px solid #d9e2ec;
+        vertical-align: top;
+        text-align: left;
+      }
+      th { background: #213547; color: #fff; font-weight: 700; }
+      code {
+        padding: 1px 4px;
+        border-radius: 4px;
+        background: #eef3f8;
+        color: #0f2435;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 11px;
+      }
+      pre {
+        margin: 10px 0 14px;
+        padding: 12px;
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        background: #0f1720;
+        color: #dbeafe;
+        white-space: pre-wrap;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 10.5px;
+        line-height: 1.38;
+      }
+      .callout {
+        margin: 12px 0;
+        padding: 12px 14px;
+        border-left: 5px solid #2f7ecb;
+        border-radius: 8px;
+        background: #f2f7fc;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .card {
+        padding: 12px;
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        background: #fff;
+      }
+      .footer {
+        margin-top: 22px;
+        padding-top: 10px;
+        border-top: 1px solid #d9e2ec;
+        color: #687887;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="cover">
+      <p class="eyebrow">Plano do código</p>
+      <h1>Pokedex em Grafos</h1>
+      <p class="subtitle">
+        Explicação da estrutura do projeto, papel de cada módulo e forma de armazenamento dos dados:
+        login, Pokémon favoritos e equipes no Neo4j.
+      </p>
+    </section>
+
+    <section>
+      <h2>1. Visão geral da arquitetura</h2>
+      <p>
+        O projeto foi organizado em três partes: frontend, backend e banco de dados. O frontend é a interface
+        usada pelo usuário. O backend é a API responsável pelas regras de negócio e pela comunicação com o banco.
+        O banco é o Neo4j, que armazena os dados como nós e relacionamentos.
+      </p>
+      <pre>Frontend HTML/CSS/JavaScript
+        |
+        | requisições HTTP fetch()
+        v
+Backend Node.js + Express
+        |
+        | neo4j-driver + Cypher
+        v
+Banco Neo4j</pre>
+      <p>
+        No Docker, o projeto é dividido em dois containers principais: <code>pokedex-app</code>, que roda a
+        aplicação, e <code>pokedex-neo4j</code>, que roda o banco.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Observação sobre “classes” no projeto</h2>
+      <p>
+        O sistema não usa classes JavaScript no formato <code>class Nome {}</code>. Ele usa módulos CommonJS,
+        com arquivos que exportam funções. Por isso, a melhor forma de explicar o código é por responsabilidade
+        de cada módulo: controllers, rotas, middlewares, banco de dados, seed e frontend.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Módulos principais do backend</h2>
+      <table>
+        <thead>
+          <tr><th>Arquivo</th><th>Responsabilidade</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>backend/src/app.js</code></td>
+            <td>Cria o servidor Express, registra middlewares e rotas, aguarda o Neo4j ficar pronto, roda o seed e inicia a API.</td>
+          </tr>
+          <tr>
+            <td><code>backend/src/database.js</code></td>
+            <td>Centraliza a conexão com o Neo4j usando <code>neo4j-driver</code>. Exporta funções de leitura, escrita e conversão de dados.</td>
+          </tr>
+          <tr>
+            <td><code>backend/src/seed.js</code></td>
+            <td>Cria dados iniciais: usuário admin, tipos, habilidades, Pokémon, fraquezas e evoluções.</td>
+          </tr>
+          <tr>
+            <td><code>authController.js</code></td>
+            <td>Controla cadastro e login de usuários com bcrypt e JWT.</td>
+          </tr>
+          <tr>
+            <td><code>pokemonController.js</code></td>
+            <td>Lista, busca e cria Pokémon, conectando-os com tipo, fraquezas, habilidades e evolução.</td>
+          </tr>
+          <tr>
+            <td><code>usuarioController.js</code></td>
+            <td>Controla favoritos e equipes do usuário autenticado.</td>
+          </tr>
+          <tr>
+            <td><code>auth.js</code></td>
+            <td>Middleware que protege rotas exigindo token JWT válido.</td>
+          </tr>
+          <tr>
+            <td><code>validacao.js</code></td>
+            <td>Valida campos obrigatórios de usuário e Pokémon antes de chegar ao controller.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Como os dados são armazenados no Neo4j</h2>
+      <p>
+        No Neo4j, os dados não são organizados em tabelas. Eles são organizados em nós e relações. Isso é adequado
+        para uma Pokédex porque o domínio possui muitas conexões naturais.
+      </p>
+      <table>
+        <thead>
+          <tr><th>Dado</th><th>Forma no Neo4j</th><th>Exemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Usuário</td><td><code>(u:Usuario)</code></td><td>nome, email, senhaHash</td></tr>
+          <tr><td>Pokémon</td><td><code>(p:Pokemon)</code></td><td>nome, numero, sprite_url, descricao</td></tr>
+          <tr><td>Tipo</td><td><code>(t:Tipo)</code></td><td>Grama, Fogo, Agua, Eletrico</td></tr>
+          <tr><td>Habilidade</td><td><code>(h:Habilidade)</code></td><td>Blaze, Torrent, Static</td></tr>
+          <tr><td>Equipe</td><td><code>(e:Equipe)</code></td><td>nome da equipe e data de criação</td></tr>
+        </tbody>
+      </table>
+      <p>Relacionamentos principais:</p>
+      <pre>(Pokemon)-[:TEM_TIPO]->(Tipo)
+(Pokemon)-[:TEM_FRAQUEZA]->(Tipo)
+(Pokemon)-[:TEM_HABILIDADE]->(Habilidade)
+(Pokemon)-[:EVOLUI_PARA]->(Pokemon)
+(Usuario)-[:FAVORITOU]->(Pokemon)
+(Usuario)-[:CRIOU_EQUIPE]->(Equipe)
+(Equipe)-[:TEM_MEMBRO]->(Pokemon)</pre>
+      <div class="callout">
+        A persistência do Neo4j no Docker é feita pelos volumes <code>neo4j_data</code> e
+        <code>neo4j_logs</code>. Mesmo que o container reinicie, os dados continuam salvos no volume.
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Armazenamento do login</h2>
+      <p>
+        O login possui duas partes: armazenamento no banco e armazenamento temporário no navegador. No banco,
+        o usuário é salvo como nó <code>Usuario</code>. A senha nunca é salva em texto puro; ela é transformada
+        em hash pelo bcrypt e salva como <code>senhaHash</code>.
+      </p>
+      <pre>const senhaHash = await bcrypt.hash(senha, 10);
+
+CREATE (u:Usuario {
+  id: randomUUID(),
+  nome: $nome,
+  email: $email,
+  senhaHash: $senhaHash,
+  createdAt: datetime()
+})</pre>
+      <p>
+        No login, o backend procura o usuário pelo e-mail e compara a senha digitada com o hash salvo:
+      </p>
+      <pre>const records = await runRead(
+  'MATCH (u:Usuario {email: $email}) RETURN u LIMIT 1',
+  { email }
+);
+
+const senhaCorreta = await bcrypt.compare(senha, usuario.senhaHash || '');</pre>
+      <p>
+        Se a senha estiver correta, o backend gera um token JWT:
+      </p>
+      <pre>const token = jwt.sign(
+  { id: usuario.id, email: usuario.email },
+  process.env.JWT_SECRET,
+  { expiresIn: '8h' }
+);</pre>
+      <p>
+        O frontend salva esse token no navegador para usar nas próximas requisições protegidas:
+      </p>
+      <pre>localStorage.setItem('pokedexToken', state.token);
+localStorage.setItem('pokedexUser', JSON.stringify(state.user));</pre>
+      <div class="callout">
+        O <code>localStorage</code> não é o banco principal. Ele guarda apenas o token e o usuário logado
+        para a sessão do navegador. Os dados reais ficam no Neo4j.
+      </div>
+    </section>
+
+    <section>
+      <h2>6. Armazenamento dos Pokémon favoritos</h2>
+      <p>
+        Um favorito não é salvo como uma lista dentro do usuário. No Neo4j, ele é salvo como uma relação entre
+        o nó do usuário e o nó do Pokémon.
+      </p>
+      <pre>MATCH (u:Usuario {id: $usuarioId}), (p:Pokemon {id: $pokemonId})
+MERGE (u)-[:FAVORITOU]->(p)
+RETURN p</pre>
+      <p>
+        Isso significa que, se o usuário favoritar Pikachu, o grafo fica assim:
+      </p>
+      <pre>(Usuario {email:'admin@pokedex.local'})
+        -[:FAVORITOU]->
+(Pokemon {nome:'Pikachu'})</pre>
+      <p>
+        Para consultar os favoritos, o backend percorre essa relação:
+      </p>
+      <pre>MATCH (u:Usuario {id: $usuarioId})-[:FAVORITOU]->(p:Pokemon)
+RETURN p ORDER BY p.numero</pre>
+      <p>
+        A vantagem é que cada favorito é uma conexão navegável. O Neo4j consegue responder naturalmente
+        perguntas como “quais Pokémon esse usuário favoritou?” ou “quais usuários favoritaram este Pokémon?”.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Armazenamento das equipes</h2>
+      <p>
+        As equipes são armazenadas como nós próprios, com o rótulo <code>Equipe</code>. O usuário cria uma equipe
+        por meio da relação <code>CRIOU_EQUIPE</code>. Os membros da equipe são ligados pelo relacionamento
+        <code>TEM_MEMBRO</code>.
+      </p>
+      <pre>MATCH (u:Usuario {id: $usuarioId})
+CREATE (e:Equipe {id: randomUUID(), nome: $nome, createdAt: datetime()})
+MERGE (u)-[:CRIOU_EQUIPE]->(e)</pre>
+      <p>
+        Depois, para cada Pokémon selecionado, o backend cria a relação de membro:
+      </p>
+      <pre>UNWIND $pokemonIds AS pokemonId
+MATCH (p:Pokemon {id: pokemonId})
+MERGE (e)-[:TEM_MEMBRO]->(p)</pre>
+      <p>O grafo resultante fica assim:</p>
+      <pre>(Usuario)-[:CRIOU_EQUIPE]->(Equipe {nome:'Time Kanto'})
+                              |
+                              +--[:TEM_MEMBRO]->(Pokemon {nome:'Pikachu'})
+                              +--[:TEM_MEMBRO]->(Pokemon {nome:'Squirtle'})</pre>
+      <p>
+        Para consultar equipes, o backend busca as equipes criadas pelo usuário e coleta os Pokémon conectados:
+      </p>
+      <pre>MATCH (u:Usuario {id: $usuarioId})-[:CRIOU_EQUIPE]->(e:Equipe)
+OPTIONAL MATCH (e)-[:TEM_MEMBRO]->(p:Pokemon)
+WITH e, collect(p {.*}) AS pokemons
+RETURN e {.*, pokemons: pokemons} AS equipe
+ORDER BY equipe.nome</pre>
+      <div class="callout">
+        A equipe pode existir como um nó mesmo se não tiver membros. Nesse caso, ela aparece com
+        <code>pokemons: []</code>.
+      </div>
+    </section>
+
+    <section>
+      <h2>8. Cadastro e armazenamento dos Pokémon</h2>
+      <p>
+        Ao cadastrar um Pokémon, o backend cria ou atualiza um nó <code>Pokemon</code> usando o número da Pokédex
+        como referência. Em seguida, remove relações antigas de tipo, fraqueza e evolução quando necessário, e cria
+        as relações novas.
+      </p>
+      <pre>MERGE (p:Pokemon {numero: $numero})
+ON CREATE SET p.id = randomUUID(), p.createdAt = datetime()
+SET p.nome = $nome,
+    p.sprite_url = $sprite_url,
+    p.descricao = $descricao,
+    p.updatedAt = datetime()</pre>
+      <p>Relação com tipo:</p>
+      <pre>MATCH (tipo:Tipo {id: $tipoId})
+MERGE (p)-[:TEM_TIPO]->(tipo)</pre>
+      <p>Relações de fraqueza:</p>
+      <pre>FOREACH (fraquezaId IN $fraquezaIds |
+  MERGE (fraqueza:Tipo {id: fraquezaId})
+  MERGE (p)-[:TEM_FRAQUEZA]->(fraqueza)
+)</pre>
+      <p>Relações de habilidade:</p>
+      <pre>FOREACH (habilidade IN $habilidades |
+  MERGE (h:Habilidade {nome: habilidade.nome})
+  ON CREATE SET h.id = randomUUID()
+  SET h.descricao = habilidade.descricao
+  MERGE (p)-[:TEM_HABILIDADE]->(h)
+)</pre>
+    </section>
+
+    <section>
+      <h2>9. Plano das rotas da API</h2>
+      <table>
+        <thead>
+          <tr><th>Rota</th><th>Função</th><th>Protegida por login?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>POST /auth/cadastro</code></td><td>Cadastra usuário.</td><td>Não</td></tr>
+          <tr><td><code>POST /auth/login</code></td><td>Autentica e retorna JWT.</td><td>Não</td></tr>
+          <tr><td><code>GET /pokemons</code></td><td>Lista Pokémon com relações.</td><td>Não</td></tr>
+          <tr><td><code>POST /pokemons</code></td><td>Cadastra ou atualiza Pokémon.</td><td>Sim</td></tr>
+          <tr><td><code>GET /usuarios/favoritos</code></td><td>Lista favoritos do usuário logado.</td><td>Sim</td></tr>
+          <tr><td><code>POST /usuarios/favoritos/:id</code></td><td>Favorita um Pokémon.</td><td>Sim</td></tr>
+          <tr><td><code>GET /usuarios/equipes</code></td><td>Lista equipes do usuário logado.</td><td>Sim</td></tr>
+          <tr><td><code>POST /usuarios/equipes</code></td><td>Cria equipe com membros.</td><td>Sim</td></tr>
+          <tr><td><code>GET /graph</code></td><td>Retorna resumo de nós e relações.</td><td>Não</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>10. Frontend e estado da tela</h2>
+      <p>
+        O frontend mantém um estado temporário em memória para renderizar a tela. Esse estado é preenchido com
+        dados vindos da API.
+      </p>
+      <pre>const state = {
+  token: localStorage.getItem('pokedexToken') || '',
+  user: JSON.parse(localStorage.getItem('pokedexUser') || 'null'),
+  pokemons: [],
+  tipos: [],
+  graph: { nodes: [], edges: [] },
+  favoritos: [],
+  equipes: [],
+  selectedId: null,
+};</pre>
+      <p>
+        Quando a tela carrega, o frontend chama <code>/tipos</code>, <code>/pokemons</code> e
+        <code>/graph</code>. Se houver token, também chama <code>/usuarios/favoritos</code> e
+        <code>/usuarios/equipes</code>.
+      </p>
+    </section>
+
+    <section>
+      <h2>11. Resumo final</h2>
+      <p>
+        O sistema usa o Neo4j como fonte de verdade. O login fica armazenado como nó <code>Usuario</code> com
+        senha criptografada. Favoritos são relações <code>FAVORITOU</code>. Equipes são nós <code>Equipe</code>
+        conectados ao usuário por <code>CRIOU_EQUIPE</code> e aos Pokémon por <code>TEM_MEMBRO</code>.
+      </p>
+      <p>
+        Essa modelagem permite que a Pokédex funcione como um grafo real, mostrando conexões entre entidades
+        em vez de guardar tudo em listas isoladas.
+      </p>
+      <p class="footer">
+        Documento gerado para explicar o plano do código e o armazenamento dos dados da Pokedex em Grafos.
+      </p>
+    </section>
+  </body>
+</html>

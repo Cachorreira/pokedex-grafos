@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Estudos - Apresentação Docker</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #17202a;
+      line-height: 1.45;
+      margin: 0;
+      background: #ffffff;
+      font-size: 12.2px;
+    }
+    h1 {
+      font-size: 28px;
+      margin: 0 0 6px;
+      color: #111827;
+      letter-spacing: 0;
+    }
+    h2 {
+      font-size: 18px;
+      margin: 22px 0 8px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #d8e2ef;
+      color: #1f3a5f;
+      page-break-after: avoid;
+    }
+    h3 {
+      font-size: 14.5px;
+      margin: 15px 0 6px;
+      color: #22324a;
+      page-break-after: avoid;
+    }
+    p { margin: 5px 0 8px; }
+    ul, ol { margin: 5px 0 10px 20px; padding: 0; }
+    li { margin: 3px 0; }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      background: #eef2f7;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #111827;
+      color: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      page-break-inside: avoid;
+    }
+    .cover {
+      padding: 18px 20px;
+      border: 1px solid #d8e2ef;
+      border-radius: 12px;
+      background: #f8fafc;
+      margin-bottom: 14px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #52606c;
+      margin-top: 4px;
+    }
+    .tagline {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 9px;
+      background: #e6f6ee;
+      color: #14532d;
+      border: 1px solid #b7e4c7;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .box {
+      border: 1px solid #d8e2ef;
+      border-left: 5px solid #2563eb;
+      padding: 9px 11px;
+      border-radius: 8px;
+      background: #fbfdff;
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+    .warning {
+      border-left-color: #f97316;
+      background: #fff7ed;
+    }
+    .success {
+      border-left-color: #16a34a;
+      background: #f0fdf4;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 12px;
+      font-size: 11.5px;
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #d8e2ef;
+      padding: 7px;
+      vertical-align: top;
+    }
+    th {
+      background: #edf2f7;
+      color: #1f2937;
+      text-align: left;
+    }
+    .page-break { page-break-before: always; }
+    .small { font-size: 11px; color: #52606c; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>Estudos para Apresentação - Pokedex em Grafos com Docker</h1>
+    <p class="subtitle">Roteiro dividido para 5 integrantes, priorizando Docker, Dockerfile, Docker Compose, containers, rede, volumes, comandos de teste e relação com o backend.</p>
+    <p><strong>Integrantes:</strong> Kaique Vinícius Oliveira Alves, Gustavo Borges Sousa, Pedro Gabriel Mendes de Oliveira, Matheus Couto, Peterson Silva Ribeiro.</p>
+    <span class="tagline">Foco: explicar e demonstrar o ambiente Docker funcionando</span>
+  </section>
+
+  <h2>1. Ideia central da apresentação</h2>
+  <p>
+    A apresentação deve mostrar que a aplicação foi empacotada em containers Docker e que os serviços conseguem funcionar juntos em um ambiente isolado. O sistema é uma Pokedex em Grafos: o backend Node.js/Express se conecta ao banco Neo4j, grava os dados como nós e relacionamentos, e entrega o frontend já compilado no navegador.
+  </p>
+  <div class="box">
+    <strong>Frase guia para explicar:</strong>
+    <p>
+      "Nosso projeto usa Docker para subir a aplicação e o banco de dados juntos. O container da aplicação roda o backend Node.js e serve o frontend. O container do Neo4j armazena os dados em grafo, com volume persistente para não perder os registros quando o container reinicia."
+    </p>
+  </div>
+
+  <h2>2. O que precisa ser demonstrado ao professor</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>O que mostrar</th>
+        <th>Comando ou tela</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Docker funcionando</td>
+        <td>Mostrar que o Docker consegue executar containers.</td>
+        <td><code>docker run --rm hello-world</code></td>
+      </tr>
+      <tr>
+        <td>Imagem personalizada</td>
+        <td>Mostrar a imagem criada para a aplicação.</td>
+        <td><code>docker images</code> e imagem <code>pokedex-app</code></td>
+      </tr>
+      <tr>
+        <td>Containers ativos</td>
+        <td>Mostrar backend/app e Neo4j rodando.</td>
+        <td><code>docker ps</code></td>
+      </tr>
+      <tr>
+        <td>Rede Docker</td>
+        <td>Mostrar a rede personalizada usada pelos serviços.</td>
+        <td><code>docker network ls --filter name=pokedex</code></td>
+      </tr>
+      <tr>
+        <td>Volumes</td>
+        <td>Mostrar volumes de persistência do Neo4j.</td>
+        <td><code>docker volume ls --filter name=pokedex</code></td>
+      </tr>
+      <tr>
+        <td>Aplicação no navegador</td>
+        <td>Mostrar a Pokedex carregando em porta local.</td>
+        <td><code>http://localhost:3000/app</code></td>
+      </tr>
+      <tr>
+        <td>Banco em grafo</td>
+        <td>Mostrar nós e relacionamentos no Neo4j Browser.</td>
+        <td><code>http://localhost:7474</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Divisão da apresentação em 5 partes</h2>
+
+  <h3>Parte 1 - Kaique: introdução, requisitos e visão geral do ambiente</h3>
+  <p><strong>Objetivo:</strong> abrir a apresentação e explicar o que foi construído.</p>
+  <ul>
+    <li>Explicar que o tema é uma Pokedex em Grafos.</li>
+    <li>Explicar que o projeto usa Node.js/Express, frontend web, Neo4j e Docker.</li>
+    <li>Mostrar o arquivo <code>docker-compose.yml</code> e dizer que ele automatiza a subida do ambiente.</li>
+    <li>Mostrar no navegador a aplicação em <code>localhost:3000/app</code>.</li>
+  </ul>
+  <div class="box">
+    <strong>Fala sugerida:</strong>
+    <p>
+      "A aplicação foi preparada para rodar com Docker. Em vez de instalar tudo manualmente na máquina, usamos containers: um container para a aplicação e outro para o banco Neo4j. O Docker Compose organiza esses serviços e cria a rede e os volumes necessários."
+    </p>
+  </div>
+
+  <h3>Parte 2 - Gustavo: Dockerfile linha por linha</h3>
+  <p><strong>Objetivo:</strong> explicar como a imagem da aplicação é criada.</p>
+  <pre>FROM node:20-alpine AS frontend-build
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
+FROM node:20-alpine AS app
+WORKDIR /app
+ENV NODE_ENV=production
+COPY backend/package*.json ./backend/
+RUN cd backend && npm ci --omit=dev
+COPY backend ./backend
+COPY --from=frontend-build /app/frontend/dist ./frontend/dist
+WORKDIR /app/backend
+EXPOSE 3000
+CMD ["npm", "start"]</pre>
+  <table>
+    <thead>
+      <tr>
+        <th>Linha</th>
+        <th>Explicação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>FROM node:20-alpine AS frontend-build</code></td>
+        <td>Inicia a primeira etapa da imagem usando Node.js 20 em uma versão leve do Linux. Essa etapa existe para compilar o frontend.</td>
+      </tr>
+      <tr>
+        <td><code>WORKDIR /app/frontend</code></td>
+        <td>Define a pasta de trabalho dentro do container para os arquivos do frontend.</td>
+      </tr>
+      <tr>
+        <td><code>COPY frontend/package*.json ./</code></td>
+        <td>Copia apenas os arquivos de dependências primeiro. Isso melhora o cache do Docker.</td>
+      </tr>
+      <tr>
+        <td><code>RUN npm ci</code></td>
+        <td>Instala as dependências do frontend de forma reproduzível.</td>
+      </tr>
+      <tr>
+        <td><code>COPY frontend/ ./</code></td>
+        <td>Copia o código do frontend para dentro da imagem.</td>
+      </tr>
+      <tr>
+        <td><code>RUN npm run build</code></td>
+        <td>Gera os arquivos finais do frontend, criando a pasta <code>dist</code>.</td>
+      </tr>
+      <tr>
+        <td><code>FROM node:20-alpine AS app</code></td>
+        <td>Inicia a segunda etapa da imagem, que será a imagem final da aplicação.</td>
+      </tr>
+      <tr>
+        <td><code>ENV NODE_ENV=production</code></td>
+        <td>Define o ambiente como produção para o Node.js.</td>
+      </tr>
+      <tr>
+        <td><code>RUN cd backend && npm ci --omit=dev</code></td>
+        <td>Instala somente as dependências necessárias para rodar o backend.</td>
+      </tr>
+      <tr>
+        <td><code>COPY --from=frontend-build ...</code></td>
+        <td>Copia o frontend já compilado da primeira etapa para a imagem final.</td>
+      </tr>
+      <tr>
+        <td><code>EXPOSE 3000</code></td>
+        <td>Documenta que a aplicação escuta na porta 3000.</td>
+      </tr>
+      <tr>
+        <td><code>CMD ["npm", "start"]</code></td>
+        <td>Comando executado quando o container da aplicação inicia.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="box success">
+    <strong>Ponto importante:</strong>
+    <p>
+      O Dockerfile usa multi-stage build. Isso significa que ele compila o frontend em uma etapa e entrega somente o necessário na imagem final, junto com o backend.
+    </p>
+  </div>
+
+  <h3 class="page-break">Parte 3 - Pedro: Docker Compose, serviços e variáveis</h3>
+  <p><strong>Objetivo:</strong> explicar os dois serviços principais: <code>app</code> e <code>neo4j</code>.</p>
+  <pre>services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: pokedex-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/pokedex123
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - pokedex_net
+
+  app:
+    build: .
+    container_name: pokedex-app
+    depends_on:
+      - neo4j
+    restart: on-failure
+    environment:
+      PORT: 3000
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: pokedex123
+      JWT_SECRET: pokedex_backend_dev_secret_2026
+    ports:
+      - "3000:3000"
+    networks:
+      - pokedex_net</pre>
+  <ul>
+    <li><code>neo4j</code>: serviço do banco de dados em grafo.</li>
+    <li><code>app</code>: serviço da aplicação, contendo backend Node.js e frontend compilado.</li>
+    <li><code>depends_on</code>: indica que o app depende do Neo4j.</li>
+    <li><code>restart: on-failure</code>: se o app tentar conectar antes do banco ficar pronto, ele pode reiniciar e tentar novamente.</li>
+    <li><code>NEO4J_URI: bolt://neo4j:7687</code>: o backend acessa o banco pelo nome do serviço, não por localhost.</li>
+  </ul>
+  <div class="box">
+    <strong>Fala sugerida:</strong>
+    <p>
+      "No Docker Compose, os serviços conseguem se enxergar pelo nome. Por isso o backend usa <code>bolt://neo4j:7687</code>. Dentro da rede Docker, <code>neo4j</code> é o endereço do container do banco."
+    </p>
+  </div>
+
+  <h3>Parte 4 - Matheus: comandos, redes, volumes e persistência</h3>
+  <p><strong>Objetivo:</strong> demonstrar os testes básicos do Docker e explicar por que rede e volume são obrigatórios.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>O que prova</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>docker run --rm hello-world</code></td>
+        <td>Prova que o Docker está instalado e consegue baixar/executar uma imagem.</td>
+      </tr>
+      <tr>
+        <td><code>docker compose up --build</code></td>
+        <td>Constrói a imagem da aplicação e sobe app + banco juntos.</td>
+      </tr>
+      <tr>
+        <td><code>docker ps</code></td>
+        <td>Lista os containers em execução.</td>
+      </tr>
+      <tr>
+        <td><code>docker images</code></td>
+        <td>Mostra as imagens existentes, incluindo <code>pokedex-app</code>.</td>
+      </tr>
+      <tr>
+        <td><code>docker stop teste-stop-rm</code></td>
+        <td>Para um container de teste.</td>
+      </tr>
+      <tr>
+        <td><code>docker rm teste-stop-rm</code></td>
+        <td>Remove o container parado.</td>
+      </tr>
+      <tr>
+        <td><code>docker network ls --filter name=pokedex</code></td>
+        <td>Mostra a rede personalizada <code>pokedex_pokedex_net</code>.</td>
+      </tr>
+      <tr>
+        <td><code>docker volume ls --filter name=pokedex</code></td>
+        <td>Mostra os volumes <code>pokedex_neo4j_data</code> e <code>pokedex_neo4j_logs</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    A rede personalizada permite que o container <code>pokedex-app</code> converse com o container <code>pokedex-neo4j</code>. O volume <code>neo4j_data</code> guarda os dados do banco fora do ciclo de vida do container. Assim, se o container do Neo4j for recriado, os dados podem continuar salvos.
+  </p>
+
+  <h3>Parte 5 - Peterson: backend, seed, controllers e armazenamento em grafo</h3>
+  <p><strong>Objetivo:</strong> explicar como o código usa o banco dentro do ambiente Docker.</p>
+  <ul>
+    <li><code>backend/src/database.js</code>: cria a conexão com o Neo4j usando as variáveis de ambiente.</li>
+    <li><code>backend/src/seed.js</code>: popula o banco com usuário admin, Pokémon, tipos, habilidades, fraquezas e relações.</li>
+    <li><code>backend/src/controllers/authController.js</code>: faz cadastro/login, gera JWT e usa bcrypt para senha.</li>
+    <li><code>backend/src/controllers/pokemonController.js</code>: cadastra e consulta Pokémon e seus relacionamentos.</li>
+    <li><code>backend/src/controllers/usuarioController.js</code>: gerencia favoritos e equipes do usuário.</li>
+    <li><code>backend/src/controllers/graphController.js</code>: expõe dados do grafo para visualização.</li>
+  </ul>
+  <pre>const driver = neo4j.driver(
+  process.env.NEO4J_URI,
+  neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+);</pre>
+  <p>
+    Esse trecho representa a conexão do backend com o banco. No Compose, <code>NEO4J_URI</code> recebe <code>bolt://neo4j:7687</code>, então o backend se conecta ao serviço <code>neo4j</code> dentro da rede Docker.
+  </p>
+  <pre>(u:Usuario)-[:FAVORITOU]->(p:Pokemon)
+(u:Usuario)-[:CRIOU_EQUIPE]->(e:Equipe)
+(e:Equipe)-[:TEM_MEMBRO]->(p:Pokemon)
+(p:Pokemon)-[:TEM_TIPO]->(t:Tipo)
+(p:Pokemon)-[:EVOLUI_PARA]->(p2:Pokemon)</pre>
+  <p>
+    Os dados não ficam em tabelas tradicionais. No Neo4j, eles ficam como nós e relacionamentos. Por exemplo, um usuário pode favoritar um Pokémon por meio da relação <code>FAVORITOU</code>, e uma equipe pode conter vários Pokémon por meio da relação <code>TEM_MEMBRO</code>.
+  </p>
+
+  <h2 class="page-break">4. Ordem recomendada para demonstrar ao vivo</h2>
+  <ol>
+    <li>Abrir o terminal na raiz do projeto: <code>C:\Users\Kaique Alves\Downloads\pokedex-backend\pokedex</code>.</li>
+    <li>Executar ou mostrar o ambiente já rodando com <code>docker compose up --build</code>.</li>
+    <li>Em outro terminal, mostrar <code>docker ps</code> para provar que há dois containers ativos.</li>
+    <li>Mostrar <code>docker images</code> para provar que a imagem <code>pokedex-app</code> foi criada.</li>
+    <li>Mostrar <code>docker network ls --filter name=pokedex</code> e <code>docker volume ls --filter name=pokedex</code>.</li>
+    <li>Abrir <code>http://localhost:3000/app</code> e demonstrar a Pokedex.</li>
+    <li>Abrir <code>http://localhost:7474</code>, logar no Neo4j e executar uma consulta de grafo.</li>
+  </ol>
+
+  <h2>5. Como explicar os dois serviços</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Serviço</th>
+        <th>Função</th>
+        <th>Portas</th>
+        <th>Onde aparece</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>app</code></td>
+        <td>Roda o backend Express e entrega o frontend compilado.</td>
+        <td><code>3000:3000</code></td>
+        <td>Navegador em <code>localhost:3000/app</code></td>
+      </tr>
+      <tr>
+        <td><code>neo4j</code></td>
+        <td>Armazena usuários, Pokémon, favoritos, equipes, tipos e relações do grafo.</td>
+        <td><code>7474:7474</code> e <code>7687:7687</code></td>
+        <td>Neo4j Browser em <code>localhost:7474</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>6. Como explicar backend, database, seed e controllers</h2>
+  <p>
+    O backend é importante na apresentação, mas deve ser explicado como parte do container <code>app</code>. Ele é o serviço que recebe as requisições do navegador, valida dados, conversa com o Neo4j e devolve respostas em JSON.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Arquivo/pasta</th>
+        <th>Explicação para apresentar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>backend/src/app.js</code></td>
+        <td>Inicializa o Express, configura rotas, middlewares e serve o frontend compilado.</td>
+      </tr>
+      <tr>
+        <td><code>backend/src/database.js</code></td>
+        <td>Centraliza a conexão com o Neo4j usando variáveis de ambiente do Docker Compose.</td>
+      </tr>
+      <tr>
+        <td><code>backend/src/seed.js</code></td>
+        <td>Cria dados iniciais e relacionamentos para que o grafo já apareça populado.</td>
+      </tr>
+      <tr>
+        <td><code>backend/src/controllers</code></td>
+        <td>Contém a lógica de cada recurso: autenticação, Pokémon, tipos, grafo, favoritos e equipes.</td>
+      </tr>
+      <tr>
+        <td><code>backend/src/routes</code></td>
+        <td>Define os endpoints da API, como <code>/auth</code>, <code>/pokemons</code> e <code>/usuarios</code>.</td>
+      </tr>
+      <tr>
+        <td><code>backend/src/middlewares</code></td>
+        <td>Trata autenticação JWT, validação, logs e erros.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>7. Resumo dos requisitos obrigatórios atendidos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Requisito</th>
+        <th>Como o projeto atende</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Pelo menos 2 serviços</td>
+        <td>O Compose possui <code>app</code> e <code>neo4j</code>.</td>
+      </tr>
+      <tr>
+        <td>Dockerfile funcional</td>
+        <td>O Dockerfile constrói frontend e backend em uma imagem Node.js.</td>
+      </tr>
+      <tr>
+        <td>Imagem personalizada</td>
+        <td>A imagem <code>pokedex-app</code> aparece em <code>docker images</code>.</td>
+      </tr>
+      <tr>
+        <td>Porta local publicada</td>
+        <td>A aplicação é acessada em <code>localhost:3000/app</code>.</td>
+      </tr>
+      <tr>
+        <td>Banco de dados em container</td>
+        <td>O Neo4j roda no container <code>pokedex-neo4j</code>.</td>
+      </tr>
+      <tr>
+        <td>Rede personalizada</td>
+        <td>A rede <code>pokedex_net</code> conecta app e banco.</td>
+      </tr>
+      <tr>
+        <td>Volume persistente</td>
+        <td>Os volumes <code>neo4j_data</code> e <code>neo4j_logs</code> persistem dados e logs.</td>
+      </tr>
+      <tr>
+        <td>Variáveis de ambiente</td>
+        <td>O Compose define porta, URI do Neo4j, usuário, senha e segredo JWT.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>8. Perguntas que podem aparecer</h2>
+  <div class="box warning">
+    <p><strong>Por que o backend usa <code>neo4j</code> no endereço e não <code>localhost</code>?</strong></p>
+    <p>Porque dentro da rede Docker os containers se comunicam pelo nome do serviço. O nome do serviço do banco no Compose é <code>neo4j</code>.</p>
+  </div>
+  <div class="box warning">
+    <p><strong>O que acontece se o container do banco for removido?</strong></p>
+    <p>Se o volume for mantido, os dados persistem. O volume <code>neo4j_data</code> guarda os arquivos do banco fora do container.</p>
+  </div>
+  <div class="box warning">
+    <p><strong>Por que existem duas etapas no Dockerfile?</strong></p>
+    <p>Para compilar o frontend separado e copiar somente o resultado final para a imagem da aplicação, deixando a entrega mais organizada.</p>
+  </div>
+  <div class="box warning">
+    <p><strong>O que o seed faz?</strong></p>
+    <p>Ele prepara o banco com dados iniciais, como usuário admin, Pokémon, tipos, habilidades e relacionamentos do grafo.</p>
+  </div>
+
+  <h2>9. Fechamento sugerido</h2>
+  <p>
+    Para concluir, reforçar que o projeto atende aos requisitos de Docker porque usa uma imagem personalizada, executa a aplicação em container, publica porta local, usa banco em outro container, possui rede personalizada, volumes persistentes e variáveis de ambiente. A Pokedex em Grafos demonstra o funcionamento do backend com Neo4j, e o Neo4j Browser mostra visualmente como os dados foram armazenados como nós e relacionamentos.
+  </p>
+
+  <p class="small">
+    Arquivo de estudo gerado para orientar a apresentação oral do projeto, com foco na infraestrutura Docker e na relação entre aplicação, banco, rede, volumes e comandos de validação.
+  </p>
+</body>
+</html>

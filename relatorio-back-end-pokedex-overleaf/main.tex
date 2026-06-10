@@ -1,0 +1,337 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{titlesec}
+
+\geometry{left=3cm,right=2cm,top=3cm,bottom=2cm}
+\onehalfspacing
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  citecolor=black
+}
+
+\definecolor{codebg}{RGB}{245,247,250}
+\definecolor{codeframe}{RGB}{210,220,230}
+\definecolor{codeblue}{RGB}{20,65,110}
+
+\lstdefinestyle{codigo}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{codeframe},
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{purple},
+  showstringspaces=false,
+  tabsize=2
+}
+\lstset{style=codigo}
+
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \includegraphics[width=3.2cm]{figuras/logo-ueg.png}\par
+  \vspace{1.4cm}
+  {\large\bfseries UNIVERSIDADE ESTADUAL DE GOIÁS\par}
+  \vspace{0.2cm}
+  {\large Banco de Dados II\par}
+  \vspace{2.3cm}
+  {\Huge\bfseries Pokedex em Grafos\par}
+  \vspace{0.5cm}
+  {\Large Relatório Técnico de Back-End\par}
+  \vspace{2.5cm}
+  \begin{flushleft}
+  \textbf{Integrantes:}\\
+  Kaique Vinícius Oliveira Alves\\
+  Pedro Gabriel Mendes de Oliveira\\
+  Gustavo Borges Sousa\\
+  Peterson Silva Ribeiro\\
+  Matheus Henrique do Couto
+  \end{flushleft}
+  \vfill
+  {\large 2026\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Descrição da Aplicação}
+
+A aplicação desenvolvida é uma Pokedex em Grafos. Uma Pokedex, no contexto do universo Pokémon, funciona como um catálogo digital no qual são registradas informações sobre diferentes Pokémon, como nome, número, imagem, descrição, tipo, habilidades e evolução. No sistema desenvolvido, esse conceito foi adaptado para uma aplicação web com front-end, back-end e banco de dados integrados.
+
+O objetivo do sistema é permitir que o usuário visualize Pokémon, consulte suas relações e interaja como treinador. A aplicação permite login, cadastro de usuário, cadastro de Pokémon, edição, remoção, favoritos e criação de equipes. O diferencial do projeto está no uso do banco Neo4j, que armazena os dados como nós e relacionamentos. Assim, um Pokémon não aparece apenas como um registro isolado, mas como uma entidade conectada a tipos, fraquezas, habilidades, evoluções, usuários e equipes.
+
+A arquitetura geral do sistema é composta por um front-end em HTML, CSS e JavaScript puro, uma API REST desenvolvida com Node.js e Express, autenticação com JWT, armazenamento de senhas com bcrypt e persistência de dados em Neo4j.
+
+\section{Análise dos Requisitos Obrigatórios}
+
+\subsection{Requisitos do Back-End}
+
+\begin{longtable}{p{4.4cm}p{2.2cm}p{7.2cm}}
+\toprule
+\textbf{Requisito} & \textbf{Status} & \textbf{Como foi atendido}\\
+\midrule
+\endhead
+No mínimo 3 recursos & Atendido & O sistema possui os recursos \texttt{Usuario}, \texttt{Pokemon}, \texttt{Tipo}, \texttt{Equipe} e \texttt{Habilidade}.\\
+CRUD completo para pelo menos 2 recursos & Atendido & Os recursos \texttt{Pokemon} e \texttt{Tipo} possuem listagem, busca, criação, atualização e remoção.\\
+Relacionamento 1:N & Atendido & Um usuário pode criar várias equipes por meio da relação \texttt{CRIOU\_EQUIPE}. Um tipo também pode estar relacionado a vários Pokémon.\\
+Conexão com banco para persistência & Atendido & A conexão é feita em \texttt{backend/src/database.js} usando o driver oficial do Neo4j.\\
+Middlewares de validação para POST e PUT & Atendido & As funções \texttt{validarUsuario}, \texttt{validarPokemon} e \texttt{validarTipo} validam os dados antes dos controllers.\\
+Middleware de log & Atendido & O arquivo \texttt{middlewares/log.js} registra método, URL, status e tempo de resposta.\\
+Variáveis de ambiente com \texttt{.env} & Atendido & Porta, URI do Neo4j, usuário, senha e segredo JWT são lidos por variáveis de ambiente.\\
+Tratamento centralizado de erros & Atendido & O middleware global \texttt{erro.js} padroniza respostas de erro.\\
+Autenticação com JWT & Atendido & As rotas \texttt{/auth/cadastro} e \texttt{/auth/login} criam usuário e geram token JWT.\\
+Rotas protegidas & Atendido & Rotas de criação, edição, remoção, favoritos e equipes usam o middleware \texttt{auth}.\\
+Hash de senhas com bcrypt & Atendido & O cadastro usa \texttt{bcrypt.hash}, e o login usa \texttt{bcrypt.compare}.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Requisitos do Front-End}
+
+\begin{longtable}{p{4.4cm}p{2.2cm}p{7.2cm}}
+\toprule
+\textbf{Requisito} & \textbf{Status} & \textbf{Como foi atendido}\\
+\midrule
+\endhead
+HTML, CSS e JavaScript puro & Atendido & A interface está em \texttt{frontend/index.html}, \texttt{frontend/src/styles.css} e \texttt{frontend/src/main.js}.\\
+Consumir a API & Atendido & O front-end utiliza \texttt{fetch} para consumir endpoints como \texttt{/pokemons}, \texttt{/tipos}, \texttt{/auth/login} e \texttt{/usuarios/equipes}.\\
+Tela de cadastro e login & Atendido & A área do treinador possui formulário para cadastro e login.\\
+Exibir, criar, editar e remover recursos principais & Atendido & A tela exibe Pokémon e permite criar, editar e remover Pokémon.\\
+Armazenar token JWT & Atendido & O token é salvo no \texttt{localStorage} como \texttt{pokedexToken}.\\
+Enviar token nas requisições autenticadas & Atendido & A função central de API envia o cabeçalho \texttt{Authorization: Bearer <token>}.\\
+Tratar mensagens de erro & Atendido & Erros da API são capturados e exibidos na área de mensagem da interface.\\
+Redirecionar ou retornar ao login quando token expirar & Atendido & Quando uma requisição protegida falha, o token é removido e o usuário volta ao estado de visitante.\\
+\bottomrule
+\end{longtable}
+
+\section{Diagrama dos Recursos e Relacionamentos}
+
+O modelo do sistema foi organizado em grafo. Os principais nós são \texttt{Usuario}, \texttt{Pokemon}, \texttt{Tipo}, \texttt{Equipe} e \texttt{Habilidade}. Os relacionamentos representam as conexões entre esses recursos.
+
+\begin{figure}[H]
+\centering
+\fbox{
+\begin{minipage}{0.9\textwidth}
+\small
+\textbf{Nós:} Usuario, Pokemon, Tipo, Equipe, Habilidade.\\[2mm]
+\textbf{Relacionamentos:}\\
+(Usuario)-[:FAVORITOU]-\textgreater(Pokemon)\\
+(Usuario)-[:CRIOU\_EQUIPE]-\textgreater(Equipe)\\
+(Equipe)-[:TEM\_MEMBRO]-\textgreater(Pokemon)\\
+(Pokemon)-[:TEM\_TIPO]-\textgreater(Tipo)\\
+(Pokemon)-[:TEM\_FRAQUEZA]-\textgreater(Tipo)\\
+(Pokemon)-[:TEM\_HABILIDADE]-\textgreater(Habilidade)\\
+(Pokemon)-[:EVOLUI\_PARA]-\textgreater(Pokemon)
+\end{minipage}
+}
+\caption{Modelo conceitual do grafo da Pokedex.}
+\end{figure}
+
+O relacionamento 1:N aparece quando um usuário cria várias equipes. Já os relacionamentos entre usuários e Pokémon favoritos, e entre equipes e Pokémon, funcionam como relações muitos-para-muitos, representadas naturalmente por arestas no Neo4j.
+
+\section{Listagem dos Endpoints}
+
+\subsection{Autenticação}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2cm}p{4.5cm}p{2cm}p{5cm}}
+\toprule
+\textbf{Método} & \textbf{Rota} & \textbf{Protegida} & \textbf{Descrição}\\
+\midrule
+POST & \texttt{/auth/cadastro} & Não & Cadastra usuário com senha criptografada.\\
+POST & \texttt{/auth/login} & Não & Autentica usuário e retorna token JWT.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Pokémon}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2cm}p{4.5cm}p{2cm}p{5cm}}
+\toprule
+\textbf{Método} & \textbf{Rota} & \textbf{Protegida} & \textbf{Descrição}\\
+\midrule
+GET & \texttt{/pokemons} & Não & Lista Pokémon com relações.\\
+GET & \texttt{/pokemons/:id} & Não & Busca Pokémon por id.\\
+POST & \texttt{/pokemons} & Sim & Cria Pokémon e relações.\\
+PUT & \texttt{/pokemons/:id} & Sim & Atualiza Pokémon.\\
+DELETE & \texttt{/pokemons/:id} & Sim & Remove Pokémon.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Tipos}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2cm}p{4.5cm}p{2cm}p{5cm}}
+\toprule
+\textbf{Método} & \textbf{Rota} & \textbf{Protegida} & \textbf{Descrição}\\
+\midrule
+GET & \texttt{/tipos} & Não & Lista tipos cadastrados.\\
+GET & \texttt{/tipos/:id} & Não & Busca tipo por id.\\
+POST & \texttt{/tipos} & Sim & Cria tipo.\\
+PUT & \texttt{/tipos/:id} & Sim & Atualiza tipo.\\
+DELETE & \texttt{/tipos/:id} & Sim & Remove tipo.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Usuário, Favoritos e Equipes}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2cm}p{4.8cm}p{2cm}p{4.7cm}}
+\toprule
+\textbf{Método} & \textbf{Rota} & \textbf{Protegida} & \textbf{Descrição}\\
+\midrule
+GET & \texttt{/usuarios/favoritos} & Sim & Lista favoritos do usuário.\\
+POST & \texttt{/usuarios/favoritos/:id} & Sim & Adiciona Pokémon aos favoritos.\\
+DELETE & \texttt{/usuarios/favoritos/:id} & Sim & Remove favorito.\\
+GET & \texttt{/usuarios/equipes} & Sim & Lista equipes do usuário.\\
+POST & \texttt{/usuarios/equipes} & Sim & Cria equipe com membros.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Grafo e Saúde da API}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2cm}p{4.5cm}p{2cm}p{5cm}}
+\toprule
+\textbf{Método} & \textbf{Rota} & \textbf{Protegida} & \textbf{Descrição}\\
+\midrule
+GET & \texttt{/graph} & Não & Retorna nós e arestas para visualização.\\
+GET & \texttt{/health} & Não & Retorna status da API.\\
+GET & \texttt{/app} & Não & Entrega o front-end compilado.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Exemplos de Implementação}
+
+\subsection{Conexão com o Neo4j}
+
+\begin{lstlisting}[language=JavaScript]
+const driver = neo4j.driver(
+  process.env.NEO4J_URI,
+  neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+);
+\end{lstlisting}
+
+Esse trecho mostra que o back-end se conecta ao Neo4j usando variáveis de ambiente. Isso evita deixar configurações sensíveis fixas no código.
+
+\subsection{Proteção de Rotas com JWT}
+
+\begin{lstlisting}[language=JavaScript]
+if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  return res.status(401).json({ erro: 'Token nao fornecido.' });
+}
+
+const token = authHeader.split(' ')[1];
+const payload = jwt.verify(token, process.env.JWT_SECRET);
+req.usuarioId = payload.id;
+next();
+\end{lstlisting}
+
+O middleware verifica se a requisição possui token. Se o token for válido, o id do usuário fica disponível para os controllers.
+
+\subsection{Uso de bcrypt}
+
+\begin{lstlisting}[language=JavaScript]
+const senhaHash = await bcrypt.hash(senha, 10);
+const senhaCorreta = await bcrypt.compare(senha, usuario.senhaHash || '');
+\end{lstlisting}
+
+O bcrypt é usado para salvar apenas o hash da senha e para comparar a senha digitada no login com o hash armazenado.
+
+\subsection{Criação de Relacionamento no Grafo}
+
+\begin{lstlisting}[language=SQL]
+MATCH (u:Usuario {id: $usuarioId}), (p:Pokemon {id: $pokemonId})
+MERGE (u)-[:FAVORITOU]->(p)
+RETURN p
+\end{lstlisting}
+
+Esse exemplo representa a operação de favoritar um Pokémon. No Neo4j, o favorito é uma relação entre usuário e Pokémon.
+
+\subsection{Consumo da API pelo Front-End}
+
+\begin{lstlisting}[language=JavaScript]
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (state.token) headers.Authorization = `Bearer ${state.token}`;
+
+  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const details = payload.erro || payload.erros?.join(' ') || 'Falha na requisicao.';
+    throw new Error(details);
+  }
+
+  return payload;
+}
+\end{lstlisting}
+
+Essa função centraliza o consumo da API. Ela envia o token quando existe, processa JSON e transforma erros da API em mensagens para a interface.
+
+\section{Testes Básicos Realizados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{5cm}p{8.5cm}}
+\toprule
+\textbf{Teste} & \textbf{Resultado}\\
+\midrule
+\texttt{GET /health} & Retornou a mensagem de funcionamento da API.\\
+\texttt{GET /pokemons} & Retornou a lista inicial com Pokémon cadastrados.\\
+\texttt{GET /tipos} & Retornou os tipos cadastrados.\\
+\texttt{POST /auth/login} & Retornou usuário autenticado e token JWT.\\
+CRUD temporário de Pokémon & Foi possível criar, atualizar e remover um Pokémon de teste usando token.\\
+CRUD temporário de Tipo & Foi possível criar, atualizar e remover um Tipo de teste usando token.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusão}
+
+O sistema Pokedex em Grafos atende aos requisitos obrigatórios do trabalho. A aplicação possui mais de três recursos, CRUD completo para Pokémon e Tipo, relacionamento entre recursos, conexão com banco Neo4j, validação de entrada, middleware de log, tratamento centralizado de erros, autenticação com JWT, rotas protegidas e senhas armazenadas com bcrypt.
+
+No front-end, a aplicação utiliza HTML, CSS e JavaScript puro, consome a API com \texttt{fetch}, armazena token JWT no \texttt{localStorage}, envia o token em requisições protegidas e exibe mensagens de erro retornadas pela API. A modelagem em grafo se mostrou adequada ao tema, pois permite representar de forma natural as relações entre Pokémon, tipos, habilidades, evoluções, favoritos e equipes.
+
+\section*{Referências}
+
+NEO4J. \textit{Neo4j Graph Database Documentation}. Disponível em: \url{https://neo4j.com/docs/}. Acesso em: 10 jun. 2026.
+
+EXPRESS. \textit{Express - Node.js web application framework}. Disponível em: \url{https://expressjs.com/}. Acesso em: 10 jun. 2026.
+
+JWT.IO. \textit{Introduction to JSON Web Tokens}. Disponível em: \url{https://jwt.io/introduction}. Acesso em: 10 jun. 2026.
+
+DOCKER. \textit{Docker Documentation}. Disponível em: \url{https://docs.docker.com/}. Acesso em: 10 jun. 2026.
+
+MDN WEB DOCS. \textit{Fetch API}. Disponível em: \url{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}. Acesso em: 10 jun. 2026.
+
+\end{document}

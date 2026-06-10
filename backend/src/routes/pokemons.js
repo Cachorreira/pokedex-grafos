@@ -7,5 +7,7 @@ const { validarPokemon } = require('../middlewares/validacao');
 router.get('/', ctrl.listar);
 router.get('/:id', ctrl.buscar);
 router.post('/', auth, validarPokemon, ctrl.criar);
+router.put('/:id', auth, validarPokemon, ctrl.atualizar);
+router.delete('/:id', auth, ctrl.remover);
 
 module.exports = router;

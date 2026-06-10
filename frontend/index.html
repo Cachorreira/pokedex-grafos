@@ -117,7 +117,10 @@
               Descricao
               <textarea name="descricao" rows="3" placeholder="Descricao curta do Pokemon."></textarea>
             </label>
-            <button type="submit">Adicionar Pokemon</button>
+            <div class="button-row">
+              <button id="pokemonSubmitButton" type="submit">Adicionar Pokemon</button>
+              <button id="pokemonCancelButton" class="secondary-button" type="button" hidden>Cancelar edicao</button>
+            </div>
           </form>
 
           <form id="teamForm" class="form-card">

@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Roteiro de Apresentação Back-End</title>
+  <style>
+    @page { size: A4; margin: 17mm 15mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #17202a;
+      line-height: 1.45;
+      font-size: 12px;
+      background: #fff;
+    }
+    h1 {
+      font-size: 28px;
+      line-height: 1.08;
+      margin: 0 0 8px;
+      color: #111827;
+    }
+    h2 {
+      font-size: 17px;
+      margin: 20px 0 8px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #d8e2ef;
+      color: #1f3a5f;
+      page-break-after: avoid;
+    }
+    h3 {
+      font-size: 14px;
+      margin: 13px 0 5px;
+      color: #22324a;
+      page-break-after: avoid;
+    }
+    p { margin: 5px 0 8px; }
+    ul, ol { margin: 5px 0 10px 20px; padding: 0; }
+    li { margin: 3px 0; }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      background: #eef2f7;
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+    pre {
+      background: #111827;
+      color: #f8fafc;
+      padding: 9px 11px;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 10.2px;
+      line-height: 1.34;
+      white-space: pre-wrap;
+      page-break-inside: avoid;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 12px;
+      font-size: 10.7px;
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #d8e2ef;
+      padding: 6px;
+      vertical-align: top;
+    }
+    th {
+      background: #edf2f7;
+      color: #1f2937;
+      text-align: left;
+    }
+    .cover {
+      padding: 18px 20px;
+      border: 1px solid #d8e2ef;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f8fafc, #edf7f0);
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+    .eyebrow {
+      color: #d13f38;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      margin-bottom: 6px;
+    }
+    .muted { color: #52606c; }
+    .box {
+      border: 1px solid #d8e2ef;
+      border-left: 5px solid #2563eb;
+      border-radius: 8px;
+      padding: 9px 11px;
+      background: #fbfdff;
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+    .success { border-left-color: #16a34a; background: #f0fdf4; }
+    .warning { border-left-color: #f97316; background: #fff7ed; }
+    .person {
+      border: 1px solid #d8e2ef;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 12px 0;
+      background: #ffffff;
+      page-break-inside: avoid;
+    }
+    .person strong {
+      color: #d13f38;
+      font-size: 13px;
+    }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <p class="eyebrow">Roteiro de apresentação · Programação Back-End</p>
+    <h1>Pokedex em Grafos: explicação do sistema, API, autenticação, CRUD e persistência</h1>
+    <p class="muted">
+      Material de estudo dividido para 5 integrantes, com explicações em linguagem de apresentação e exemplos práticos retirados do código do projeto.
+    </p>
+    <p><strong>Projeto:</strong> Pokedex em Grafos</p>
+    <p><strong>Integrantes:</strong> Kaique Vinícius Oliveira Alves, Gustavo Borges Sousa, Pedro Gabriel Mendes de Oliveira, Matheus Couto, Peterson Silva Ribeiro.</p>
+  </section>
+
+  <h2>1. Como organizar a apresentação</h2>
+  <p>
+    A apresentação deve seguir uma sequência lógica: primeiro explicar o que o sistema faz, depois mostrar os recursos da aplicação, em seguida explicar a API e o CRUD, depois a autenticação e segurança, e por fim demonstrar o front-end consumindo a API e o banco Neo4j persistindo os dados.
+  </p>
+  <div class="box">
+    <strong>Ideia central para falar:</strong>
+    <p>
+      "O nosso sistema é uma Pokedex em Grafos. Ele tem uma API REST em Node.js com Express, um front-end em HTML, CSS e JavaScript puro, autenticação com JWT, senhas protegidas com bcrypt e persistência em banco Neo4j. O diferencial é que os dados são armazenados como nós e relacionamentos, o que combina bem com Pokémon, tipos, evoluções, favoritos e equipes."
+    </p>
+  </div>
+
+  <h2>2. Divisão da apresentação em 5 partes</h2>
+  <div class="person">
+    <strong>Parte 1 - Kaique: visão geral do sistema e recursos</strong>
+    <p>Explicar o tema, o problema resolvido, os principais recursos e como eles se relacionam.</p>
+    <ul>
+      <li>Apresentar a Pokedex em Grafos.</li>
+      <li>Explicar os recursos: Usuário, Pokémon, Tipo, Habilidade, Equipe e Favoritos.</li>
+      <li>Mostrar que existem relacionamentos entre eles no Neo4j.</li>
+    </ul>
+  </div>
+  <div class="person">
+    <strong>Parte 2 - Gustavo: API REST, rotas e CRUD</strong>
+    <p>Explicar como a API foi organizada, como funcionam as rotas e como o CRUD foi implementado.</p>
+    <ul>
+      <li>Mostrar rotas de Pokémon e Tipo.</li>
+      <li>Explicar GET, POST, PUT e DELETE.</li>
+      <li>Explicar como o controller recebe dados, executa Cypher e retorna JSON.</li>
+    </ul>
+  </div>
+  <div class="person">
+    <strong>Parte 3 - Pedro: autenticação, JWT, bcrypt e proteção de rotas</strong>
+    <p>Explicar cadastro, login, hash de senha, geração de token e middleware de autenticação.</p>
+    <ul>
+      <li>Mostrar <code>authController.js</code>.</li>
+      <li>Mostrar <code>middlewares/auth.js</code>.</li>
+      <li>Explicar por que as rotas protegidas precisam de token.</li>
+    </ul>
+  </div>
+  <div class="person">
+    <strong>Parte 4 - Matheus: validação, logs e tratamento centralizado de erros</strong>
+    <p>Explicar como o back-end valida entradas, registra requisições e trata erros de maneira padronizada.</p>
+    <ul>
+      <li>Mostrar <code>validacao.js</code>.</li>
+      <li>Mostrar <code>log.js</code>.</li>
+      <li>Mostrar <code>erro.js</code>.</li>
+    </ul>
+  </div>
+  <div class="person">
+    <strong>Parte 5 - Peterson: Neo4j, persistência e front-end consumindo API</strong>
+    <p>Explicar como os dados são salvos no banco de grafos e como o JavaScript do front-end consome a API.</p>
+    <ul>
+      <li>Mostrar <code>database.js</code>.</li>
+      <li>Mostrar exemplos de relações Cypher.</li>
+      <li>Mostrar <code>fetch</code>, localStorage e envio do token nas requisições.</li>
+    </ul>
+  </div>
+
+  <h2 class="page-break">3. Parte 1 - Visão geral do sistema e recursos</h2>
+  <h3>3.1 O que o sistema faz</h3>
+  <p>
+    O sistema permite visualizar Pokémon, consultar suas relações e interagir como treinador. O usuário pode fazer login, cadastrar Pokémon, favoritar Pokémon e criar equipes. A aplicação também exibe um "mapa do grafo", que mostra as relações cadastradas.
+  </p>
+
+  <h3>3.2 Recursos principais</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Recurso</th>
+        <th>Função no sistema</th>
+        <th>Como aparece no banco</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Usuario</code></td>
+        <td>Representa o treinador. Pode se cadastrar, fazer login, favoritar Pokémon e criar equipes.</td>
+        <td>Nó <code>(u:Usuario)</code> com id, nome, email e senhaHash.</td>
+      </tr>
+      <tr>
+        <td><code>Pokemon</code></td>
+        <td>Recurso principal da Pokedex. Tem número, nome, descrição, imagem, tipo, fraquezas, habilidades e evolução.</td>
+        <td>Nó <code>(p:Pokemon)</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Tipo</code></td>
+        <td>Classifica Pokémon, como Fogo, Água, Grama e Elétrico.</td>
+        <td>Nó <code>(t:Tipo)</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Habilidade</code></td>
+        <td>Descreve habilidades relacionadas a um Pokémon.</td>
+        <td>Nó <code>(h:Habilidade)</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Equipe</code></td>
+        <td>Agrupa Pokémon escolhidos por um usuário.</td>
+        <td>Nó <code>(e:Equipe)</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Favoritos</code></td>
+        <td>Não é uma tabela separada; é uma relação entre usuário e Pokémon.</td>
+        <td>Relação <code>(Usuario)-[:FAVORITOU]-&gt;(Pokemon)</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>3.3 Como explicar os relacionamentos</h3>
+  <pre>(Usuario)-[:FAVORITOU]-&gt;(Pokemon)
+(Usuario)-[:CRIOU_EQUIPE]-&gt;(Equipe)
+(Equipe)-[:TEM_MEMBRO]-&gt;(Pokemon)
+(Pokemon)-[:TEM_TIPO]-&gt;(Tipo)
+(Pokemon)-[:TEM_FRAQUEZA]-&gt;(Tipo)
+(Pokemon)-[:TEM_HABILIDADE]-&gt;(Habilidade)
+(Pokemon)-[:EVOLUI_PARA]-&gt;(Pokemon)</pre>
+  <p>
+    Em uma apresentação, diga que o Neo4j trabalha com nós e relações. O nó guarda os dados da entidade, e a relação mostra como uma entidade se conecta com outra. Isso é útil porque Pokémon naturalmente possuem ligações: eles têm tipos, fraquezas, evoluções e podem pertencer a equipes.
+  </p>
+
+  <h2 class="page-break">4. Parte 2 - API REST, rotas e CRUD</h2>
+  <h3>4.1 O que é a API no projeto</h3>
+  <p>
+    A API é a camada que recebe as requisições do front-end, conversa com o banco Neo4j e devolve respostas em JSON. Ela foi feita com Node.js e Express. As rotas ficam em <code>backend/src/routes</code> e a lógica fica em <code>backend/src/controllers</code>.
+  </p>
+
+  <h3>4.2 Exemplo de rotas de Pokémon</h3>
+  <pre>router.get('/', ctrl.listar);
+router.get('/:id', ctrl.buscar);
+router.post('/', auth, validarPokemon, ctrl.criar);
+router.put('/:id', auth, validarPokemon, ctrl.atualizar);
+router.delete('/:id', auth, ctrl.remover);</pre>
+  <p>
+    Esse trecho mostra o CRUD completo de Pokémon. O <code>GET</code> lista ou busca, o <code>POST</code> cria, o <code>PUT</code> atualiza e o <code>DELETE</code> remove. As rotas que modificam dados usam <code>auth</code>, ou seja, exigem usuário logado.
+  </p>
+
+  <h3>4.3 Como o CRUD funciona na prática</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Operação</th>
+        <th>Rota</th>
+        <th>Explicação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Create</td>
+        <td><code>POST /pokemons</code></td>
+        <td>Recebe dados do formulário, valida entrada, cria ou atualiza o nó Pokémon e cria relações com Tipo, Fraqueza, Habilidade e Evolução.</td>
+      </tr>
+      <tr>
+        <td>Read</td>
+        <td><code>GET /pokemons</code> e <code>GET /pokemons/:id</code></td>
+        <td>Busca Pokémon no Neo4j e devolve JSON para o front-end montar o catálogo.</td>
+      </tr>
+      <tr>
+        <td>Update</td>
+        <td><code>PUT /pokemons/:id</code></td>
+        <td>Atualiza nome, número, descrição, sprite e substitui relações antigas por novas relações.</td>
+      </tr>
+      <tr>
+        <td>Delete</td>
+        <td><code>DELETE /pokemons/:id</code></td>
+        <td>Remove o Pokémon e suas relações usando <code>DETACH DELETE</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 Exemplo de leitura do Pokémon com relações</h3>
+  <pre>RETURN p {
+  .*,
+  tipo: head([(p)-[:TEM_TIPO]-&gt;(t:Tipo) | t {.*}]),
+  fraquezas: [(p)-[:TEM_FRAQUEZA]-&gt;(f:Tipo) | f {.*}],
+  habilidades: [(p)-[:TEM_HABILIDADE]-&gt;(h:Habilidade) | h {.*}],
+  evoluiPara: head([(p)-[:EVOLUI_PARA]-&gt;(e:Pokemon) | e {.*}])
+} AS pokemon</pre>
+  <p>
+    Esse trecho é importante porque mostra que a API não devolve apenas os dados simples do Pokémon. Ela também monta o objeto com os dados relacionados, como tipo, fraquezas, habilidades e evolução.
+  </p>
+
+  <h3>4.5 CRUD de Tipo</h3>
+  <p>
+    O recurso <code>Tipo</code> também possui CRUD completo. Ele pode ser listado, buscado, criado, atualizado e removido. Isso atende ao requisito de pelo menos dois recursos com CRUD completo.
+  </p>
+  <pre>router.get('/', ctrl.listar);
+router.get('/:id', ctrl.buscar);
+router.post('/', auth, validarTipo, ctrl.criar);
+router.put('/:id', auth, validarTipo, ctrl.atualizar);
+router.delete('/:id', auth, ctrl.remover);</pre>
+
+  <h2 class="page-break">5. Parte 3 - Autenticação, JWT, bcrypt e proteção de rotas</h2>
+  <h3>5.1 Cadastro de usuário e bcrypt</h3>
+  <p>
+    No cadastro, a senha nunca é salva em texto puro. Antes de gravar no Neo4j, o sistema usa bcrypt para gerar um hash da senha.
+  </p>
+  <pre>const senhaHash = await bcrypt.hash(senha, 10);
+
+CREATE (u:Usuario {
+  id: randomUUID(),
+  nome: $nome,
+  email: $email,
+  senhaHash: $senhaHash,
+  createdAt: datetime()
+})</pre>
+  <p>
+    Na fala, explique assim: "O bcrypt transforma a senha em um hash. Mesmo que alguém veja o banco, não encontra a senha original do usuário. O número 10 representa o custo de processamento do hash."
+  </p>
+
+  <h3>5.2 Login com comparação de senha</h3>
+  <pre>const senhaCorreta = await bcrypt.compare(senha, usuario.senhaHash || '');
+if (!senhaCorreta) {
+  return res.status(401).json({ erro: 'E-mail ou senha invalidos.' });
+}</pre>
+  <p>
+    No login, o sistema não descriptografa a senha. Ele compara a senha digitada com o hash salvo. Se não bater, retorna erro 401.
+  </p>
+
+  <h3>5.3 Geração do token JWT</h3>
+  <pre>const token = jwt.sign(
+  { id: usuario.id, email: usuario.email },
+  process.env.JWT_SECRET,
+  { expiresIn: '8h' }
+);</pre>
+  <p>
+    Depois do login correto, a API gera um token JWT. Esse token funciona como uma credencial temporária. Ele guarda informações básicas, como id e email do usuário, é assinado com <code>JWT_SECRET</code> e expira em 8 horas.
+  </p>
+
+  <h3>5.4 Proteção das rotas</h3>
+  <pre>if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  return res.status(401).json({ erro: 'Token não fornecido.' });
+}
+
+const token = authHeader.split(' ')[1];
+const payload = jwt.verify(token, process.env.JWT_SECRET);
+req.usuarioId = payload.id;
+next();</pre>
+  <p>
+    As rotas protegidas usam o middleware <code>auth</code>. Ele verifica se a requisição tem o cabeçalho <code>Authorization: Bearer token</code>. Se o token for válido, o id do usuário fica disponível em <code>req.usuarioId</code>. Se for inválido, a API retorna erro.
+  </p>
+
+  <h3>5.5 Exemplos de rotas protegidas</h3>
+  <pre>router.post('/', auth, validarPokemon, ctrl.criar);
+router.put('/:id', auth, validarPokemon, ctrl.atualizar);
+router.delete('/:id', auth, ctrl.remover);
+
+router.get('/favoritos', auth, ctrl.favoritos);
+router.post('/equipes', auth, ctrl.criarEquipe);</pre>
+  <p>
+    Explique que qualquer pessoa pode visualizar a Pokedex, mas apenas usuários logados conseguem alterar dados, favoritar Pokémon e criar equipes.
+  </p>
+
+  <h2 class="page-break">6. Parte 4 - Validação, logs e tratamento de erros</h2>
+  <h3>6.1 Validação de dados de entrada</h3>
+  <p>
+    Antes de chegar ao controller, os dados passam por middlewares de validação. Isso impede que a API tente salvar registros incompletos ou inválidos.
+  </p>
+  <pre>function validarPokemon(req, res, next) {
+  const { nome, numero, tipoId } = req.body;
+  const erros = [];
+
+  if (!nome || nome.trim() === '') erros.push('Campo "nome" e obrigatorio.');
+  if (!numero || Number.isNaN(Number(numero))) erros.push('Campo "numero" deve ser numerico.');
+  if (!tipoId) erros.push('Campo "tipoId" e obrigatorio.');
+
+  if (erros.length) return res.status(400).json({ erros });
+  next();
+}</pre>
+  <p>
+    Se houver erro, a API responde com status 400 e uma lista de mensagens. Se estiver tudo certo, chama <code>next()</code> e deixa a requisição continuar.
+  </p>
+
+  <h3>6.2 Validação de usuário e tipo</h3>
+  <pre>if (!email || email.trim() === '') erros.push('Campo "email" e obrigatorio.');
+if (!senha || senha.length &lt; 6) erros.push('Campo "senha" deve ter pelo menos 6 caracteres.');
+
+if (cor && !/^#[0-9a-fA-F]{6}$/.test(cor)) {
+  erros.push('Campo "cor" deve estar no formato hexadecimal, como #78c850.');
+}</pre>
+  <p>
+    No usuário, o sistema exige email e senha com pelo menos 6 caracteres. No tipo, a cor precisa seguir formato hexadecimal, como <code>#78c850</code>.
+  </p>
+
+  <h3>6.3 Middleware de log</h3>
+  <pre>res.on('finish', () =&gt; {
+  const duracao = Date.now() - inicio;
+  const agora = new Date().toISOString();
+  console.log(`[${agora}] ${req.method} ${req.originalUrl} → ${res.statusCode} (${duracao}ms)`);
+});</pre>
+  <p>
+    Esse middleware registra cada requisição no terminal. Ele mostra método, URL, status da resposta e tempo de execução. Isso ajuda a acompanhar o que está acontecendo no servidor durante testes e apresentação.
+  </p>
+
+  <h3>6.4 Tratamento centralizado de erros</h3>
+  <pre>function erroMiddleware(err, req, res, next) {
+  console.error(`[ERRO] ${err.message}`);
+
+  const status = err.status || 500;
+  const mensagem = err.message || 'Erro interno do servidor.';
+
+  res.status(status).json({ erro: mensagem });
+}</pre>
+  <p>
+    Esse middleware é registrado por último no <code>app.js</code>. Quando algum controller chama <code>next(err)</code>, o erro cai nesse ponto central. Assim, a API mantém um padrão de resposta: <code>{ erro: "mensagem" }</code>.
+  </p>
+
+  <h3>6.5 Mensagens de erro esperadas</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Situação</th>
+        <th>Mensagem possível</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Login incorreto</td><td><code>E-mail ou senha invalidos.</code></td></tr>
+      <tr><td>Email já cadastrado</td><td><code>E-mail ja cadastrado.</code></td></tr>
+      <tr><td>Sem token</td><td><code>Token não fornecido.</code></td></tr>
+      <tr><td>Token inválido ou expirado</td><td><code>Token inválido ou expirado.</code></td></tr>
+      <tr><td>Pokémon sem nome</td><td><code>Campo "nome" e obrigatorio.</code></td></tr>
+      <tr><td>Número inválido</td><td><code>Campo "numero" deve ser numerico.</code></td></tr>
+      <tr><td>Tipo ausente</td><td><code>Campo "tipoId" e obrigatorio.</code></td></tr>
+      <tr><td>Equipe sem nome</td><td><code>Campo "nome" da equipe e obrigatorio.</code></td></tr>
+      <tr><td>Pokémon inexistente</td><td><code>Pokemon nao encontrado.</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="page-break">7. Parte 5 - Neo4j, persistência e consumo da API pelo front-end</h2>
+  <h3>7.1 Conexão com o Neo4j</h3>
+  <pre>const driver = neo4j.driver(
+  process.env.NEO4J_URI || 'bolt://localhost:7687',
+  neo4j.auth.basic(
+    process.env.NEO4J_USER || 'neo4j',
+    process.env.NEO4J_PASSWORD || 'pokedex123'
+  )
+);</pre>
+  <p>
+    O arquivo <code>database.js</code> cria a conexão com o banco usando variáveis de ambiente. Em Docker, a URI é <code>bolt://neo4j:7687</code>. Localmente, há um valor padrão para <code>bolt://localhost:7687</code>.
+  </p>
+
+  <h3>7.2 Funções de leitura e escrita</h3>
+  <pre>async function runRead(cypher, params = {}) {
+  const session = driver.session();
+  try {
+    const result = await session.executeRead((tx) =&gt; tx.run(cypher, params));
+    return result.records;
+  } finally {
+    await session.close();
+  }
+}
+
+async function runWrite(cypher, params = {}) {
+  const session = driver.session();
+  try {
+    const result = await session.executeWrite((tx) =&gt; tx.run(cypher, params));
+    return result.records;
+  } finally {
+    await session.close();
+  }
+}</pre>
+  <p>
+    A aplicação separa leituras e escritas. <code>runRead</code> é usado para consultas, e <code>runWrite</code> para criar, atualizar ou remover dados. Em ambos os casos, a sessão é fechada no <code>finally</code>, evitando conexões abertas desnecessárias.
+  </p>
+
+  <h3>7.3 Persistência dos dados no Neo4j</h3>
+  <pre>MATCH (u:Usuario {id: $usuarioId}), (p:Pokemon {id: $pokemonId})
+MERGE (u)-[:FAVORITOU]-&gt;(p)
+RETURN p</pre>
+  <p>
+    Esse trecho cria a relação de favorito. Se a relação já existir, <code>MERGE</code> evita duplicação. Isso é uma vantagem do grafo: o favorito não precisa ser uma tabela intermediária; ele é uma relação entre dois nós.
+  </p>
+
+  <h3>7.4 Criação de equipes</h3>
+  <pre>MATCH (u:Usuario {id: $usuarioId})
+CREATE (e:Equipe {id: randomUUID(), nome: $nome, createdAt: datetime()})
+MERGE (u)-[:CRIOU_EQUIPE]-&gt;(e)
+WITH e
+UNWIND $pokemonIds AS pokemonId
+MATCH (p:Pokemon {id: pokemonId})
+MERGE (e)-[:TEM_MEMBRO]-&gt;(p)</pre>
+  <p>
+    Quando o usuário cria uma equipe, o sistema cria um nó <code>Equipe</code>, liga essa equipe ao usuário e depois cria relações entre a equipe e cada Pokémon selecionado. O <code>UNWIND</code> percorre a lista de ids enviada pelo front-end.
+  </p>
+
+  <h3>7.5 Como o front-end consome a API com fetch</h3>
+  <pre>async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (state.token) headers.Authorization = `Bearer ${state.token}`;
+
+  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const payload = await response.json().catch(() =&gt; ({}));
+
+  if (!response.ok) {
+    const details = payload.erro || payload.erros?.join(' ') || 'Falha na requisicao.';
+    throw new Error(details);
+  }
+
+  return payload;
+}</pre>
+  <p>
+    Essa função centraliza as chamadas HTTP do front-end. Ela monta os cabeçalhos, envia o token quando existe, lê a resposta JSON e transforma erros da API em mensagens para a tela.
+  </p>
+
+  <h3>7.6 Armazenamento do token JWT no front-end</h3>
+  <pre>token: localStorage.getItem('pokedexToken') || '',
+user: JSON.parse(localStorage.getItem('pokedexUser') || 'null'),
+
+localStorage.setItem('pokedexToken', state.token);
+localStorage.setItem('pokedexUser', JSON.stringify(state.user));</pre>
+  <p>
+    Depois do login, o token fica salvo no <code>localStorage</code>. Assim, se o usuário atualizar a página, o front-end consegue recuperar o token e manter o estado de login.
+  </p>
+
+  <h3>7.7 Envio do token nas requisições protegidas</h3>
+  <pre>if (state.token) {
+  headers.Authorization = `Bearer ${state.token}`;
+}</pre>
+  <p>
+    Sempre que existe token, ele é enviado no cabeçalho <code>Authorization</code>. É isso que permite acessar rotas protegidas, como criar Pokémon, favoritar e criar equipes.
+  </p>
+
+  <h3>7.8 Quando o token expira ou é inválido</h3>
+  <pre>catch (error) {
+  state.token = '';
+  state.user = null;
+  state.favoritos = [];
+  state.equipes = [];
+  localStorage.removeItem('pokedexToken');
+  localStorage.removeItem('pokedexUser');
+  setMessage('Sua sessao expirou. Faca login novamente para ver favoritos e equipes.', 'error');
+}</pre>
+  <p>
+    Quando a API rejeita o token, o front-end limpa o token salvo, remove o usuário da sessão e mostra uma mensagem pedindo novo login. Esse comportamento atende ao requisito de tratar token expirado ou inválido.
+  </p>
+
+  <h2 class="page-break">8. Como demonstrar na hora</h2>
+  <ol>
+    <li>Abrir a aplicação em <code>http://localhost:3000/app</code> e mostrar o catálogo.</li>
+    <li>Fazer login com <code>admin@pokedex.local</code> e <code>pokedex123</code>.</li>
+    <li>Mostrar que o status muda para usuário logado.</li>
+    <li>Cadastrar um Pokémon de teste preenchendo nome, número e tipo.</li>
+    <li>Clicar no Pokémon, usar editar e salvar alterações.</li>
+    <li>Remover o Pokémon de teste.</li>
+    <li>Favoritar um Pokémon e mostrar a lista de favoritos.</li>
+    <li>Criar uma equipe e mostrar a lista de equipes.</li>
+    <li>Abrir o Neo4j Browser e executar <code>MATCH (n)-[r]-&gt;(m) RETURN n, r, m LIMIT 50;</code>.</li>
+    <li>No VS Code, mostrar os arquivos principais: rotas, controllers, middlewares e database.</li>
+  </ol>
+
+  <h2>9. Resumo final para decorar</h2>
+  <div class="box success">
+    <p>
+      "O projeto atende aos requisitos porque tem API REST em Node.js com Express, mais de três recursos, CRUD completo para Pokémon e Tipo, relacionamento 1:N e N:M em grafo, conexão com banco Neo4j, validação de entrada, middleware de log, tratamento centralizado de erros, autenticação JWT, rotas protegidas, senhas com bcrypt e front-end puro consumindo a API com fetch."
+    </p>
+  </div>
+</body>
+</html>

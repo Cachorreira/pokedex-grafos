@@ -166,6 +166,8 @@ textarea:focus {
 
 .icon-button,
 .favorite-button,
+.secondary-button,
+.danger-button,
 .form-card button {
   border: 0;
   border-radius: 8px;
@@ -273,6 +275,24 @@ textarea:focus {
   min-height: 44px;
   margin-top: 2px;
   background: #d13f38;
+}
+
+.detail-actions {
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.detail-actions button {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+
+.secondary-button {
+  background: #52606c;
+}
+
+.danger-button {
+  background: #9f1d1d;
 }
 
 .dex-section,
@@ -420,6 +440,10 @@ textarea:focus {
 
 .button-row button:first-child {
   background: #213547;
+}
+
+.button-row button[hidden] {
+  display: none;
 }
 
 .trainer-data {

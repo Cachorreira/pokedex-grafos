@@ -9,6 +9,7 @@ const state = {
   favoritos: [],
   equipes: [],
   selectedId: null,
+  editingPokemonId: null,
 };
 
 const els = {
@@ -25,6 +26,8 @@ const els = {
   authForm: document.querySelector('#authForm'),
   registerButton: document.querySelector('#registerButton'),
   pokemonForm: document.querySelector('#pokemonForm'),
+  pokemonSubmitButton: document.querySelector('#pokemonSubmitButton'),
+  pokemonCancelButton: document.querySelector('#pokemonCancelButton'),
   pokemonTypeSelect: document.querySelector('#pokemonForm select[name="tipoId"]'),
   pokemonWeaknessSelect: document.querySelector('#pokemonForm select[name="fraquezaIds"]'),
   evolutionSelect: document.querySelector('#pokemonForm select[name="evoluiParaId"]'),
@@ -155,7 +158,11 @@ function renderDetail() {
         <strong>Habilidades</strong>
         <div>${chipList(pokemon.habilidades, 'Nenhuma habilidade cadastrada')}</div>
       </div>
-      <button class="favorite-button" data-favorite="${pokemon.id}" type="button">Favoritar</button>
+      <div class="button-row detail-actions">
+        <button class="favorite-button" data-favorite="${pokemon.id}" type="button">Favoritar</button>
+        <button class="secondary-button" data-edit="${pokemon.id}" type="button">Editar</button>
+        <button class="danger-button" data-remove="${pokemon.id}" type="button">Remover</button>
+      </div>
     </div>
   `;
 }
@@ -187,6 +194,33 @@ function renderAll() {
   renderGraph();
   renderAuth();
   renderTrainerData();
+}
+
+function setPokemonFormMode(pokemon = null) {
+  state.editingPokemonId = pokemon?.id || null;
+  els.pokemonSubmitButton.textContent = pokemon ? 'Salvar alteracoes' : 'Adicionar Pokemon';
+  els.pokemonCancelButton.hidden = !pokemon;
+}
+
+function fillPokemonForm(pokemon) {
+  const normalized = normalizePokemon(pokemon);
+  els.pokemonForm.nome.value = normalized.nome || '';
+  els.pokemonForm.numero.value = normalized.numero || '';
+  els.pokemonForm.tipoId.value = normalized.tipo?.id || '';
+  els.pokemonForm.evoluiParaId.value = normalized.evoluiPara?.id || '';
+  els.pokemonForm.sprite_url.value = normalized.sprite_url || '';
+  els.pokemonForm.descricao.value = normalized.descricao || '';
+  els.pokemonForm.habilidades.value = normalized.habilidades
+    .map((habilidade) => `${habilidade.nome}${habilidade.descricao ? `: ${habilidade.descricao}` : ''}`)
+    .join(', ');
+
+  const fraquezaIds = new Set(normalized.fraquezas.map((fraqueza) => fraqueza.id));
+  for (const option of els.pokemonWeaknessSelect.options) {
+    option.selected = fraquezaIds.has(option.value);
+  }
+
+  setPokemonFormMode(normalized);
+  els.pokemonForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function loadProtectedData() {
@@ -266,16 +300,39 @@ els.grid.addEventListener('click', (event) => {
 });
 
 els.detail.addEventListener('click', async (event) => {
-  const button = event.target.closest('[data-favorite]');
-  if (!button) return;
-  if (!state.token) {
-    setMessage('Faca login antes de favoritar Pokemon.', 'error');
-    return;
-  }
+  const favoriteButton = event.target.closest('[data-favorite]');
+  const editButton = event.target.closest('[data-edit]');
+  const removeButton = event.target.closest('[data-remove]');
+
   try {
-    await api(`/usuarios/favoritos/${button.dataset.favorite}`, { method: 'POST', body: '{}' });
-    setMessage('Pokemon favoritado.', 'success');
-    await loadData();
+    if (favoriteButton) {
+      if (!state.token) {
+        setMessage('Faca login antes de favoritar Pokemon.', 'error');
+        return;
+      }
+      await api(`/usuarios/favoritos/${favoriteButton.dataset.favorite}`, { method: 'POST', body: '{}' });
+      setMessage('Pokemon favoritado.', 'success');
+      await loadData();
+    }
+
+    if (editButton) {
+      const pokemon = state.pokemons.find((item) => item.id === editButton.dataset.edit);
+      if (pokemon) fillPokemonForm(pokemon);
+    }
+
+    if (removeButton) {
+      if (!state.token) {
+        setMessage('Faca login antes de remover Pokemon.', 'error');
+        return;
+      }
+      const pokemon = state.pokemons.find((item) => item.id === removeButton.dataset.remove);
+      if (!pokemon || !confirm(`Remover ${pokemon.nome} do grafo?`)) return;
+      await api(`/pokemons/${removeButton.dataset.remove}`, { method: 'DELETE' });
+      state.selectedId = null;
+      setPokemonFormMode();
+      setMessage('Pokemon removido do grafo.', 'success');
+      await loadData();
+    }
   } catch (error) {
     setMessage(error.message, 'error');
   }
@@ -286,9 +343,18 @@ els.typeFilter.addEventListener('change', renderGrid);
 els.refresh.addEventListener('click', () => loadData().catch((error) => setMessage(error.message, 'error')));
 els.authForm.addEventListener('submit', (event) => handleAuth(event, 'login').catch((error) => setMessage(error.message, 'error')));
 els.registerButton.addEventListener('click', (event) => handleAuth(event, 'cadastro').catch((error) => setMessage(error.message, 'error')));
+els.pokemonCancelButton.addEventListener('click', () => {
+  els.pokemonForm.reset();
+  setPokemonFormMode();
+  setMessage('Edicao cancelada.', 'info');
+});
 
 els.pokemonForm.addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (!state.token) {
+    setMessage('Faca login antes de salvar Pokemon.', 'error');
+    return;
+  }
   const form = new FormData(els.pokemonForm);
   const habilidadesText = String(form.get('habilidades') || '').trim();
   const habilidades = habilidadesText
@@ -298,21 +364,26 @@ els.pokemonForm.addEventListener('submit', async (event) => {
       }).filter((item) => item.nome)
     : [];
 
-  await api('/pokemons', {
-    method: 'POST',
-    body: JSON.stringify({
-      nome: form.get('nome'),
-      numero: Number(form.get('numero')),
-      tipoId: form.get('tipoId'),
-      fraquezaIds: form.getAll('fraquezaIds'),
-      evoluiParaId: form.get('evoluiParaId'),
-      sprite_url: form.get('sprite_url'),
-      descricao: form.get('descricao'),
-      habilidades,
-    }),
+  const payload = {
+    nome: form.get('nome'),
+    numero: Number(form.get('numero')),
+    tipoId: form.get('tipoId'),
+    fraquezaIds: form.getAll('fraquezaIds'),
+    evoluiParaId: form.get('evoluiParaId'),
+    sprite_url: form.get('sprite_url'),
+    descricao: form.get('descricao'),
+    habilidades,
+  };
+  const path = state.editingPokemonId ? `/pokemons/${state.editingPokemonId}` : '/pokemons';
+  const method = state.editingPokemonId ? 'PUT' : 'POST';
+
+  await api(path, {
+    method,
+    body: JSON.stringify(payload),
   });
   els.pokemonForm.reset();
-  setMessage('Pokemon adicionado ao grafo.', 'success');
+  setPokemonFormMode();
+  setMessage(method === 'PUT' ? 'Pokemon atualizado no grafo.' : 'Pokemon adicionado ao grafo.', 'success');
   await loadData();
 });
 

@@ -21,4 +21,15 @@ function validarUsuario(req, res, next) {
   next();
 }
 
-module.exports = { validarPokemon, validarUsuario };
+function validarTipo(req, res, next) {
+  const { nome, cor } = req.body;
+  const erros = [];
+
+  if (!nome || nome.trim() === '') erros.push('Campo "nome" e obrigatorio.');
+  if (cor && !/^#[0-9a-fA-F]{6}$/.test(cor)) erros.push('Campo "cor" deve estar no formato hexadecimal, como #78c850.');
+
+  if (erros.length) return res.status(400).json({ erros });
+  next();
+}
+
+module.exports = { validarPokemon, validarUsuario, validarTipo };
